@@ -1,0 +1,37 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="staticCtx" value="${pageContext.request.contextPath}/static"/>
+<html>
+<head>
+	<title>专业绩效页面</title>
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<script type="text/javascript">
+	
+</script>
+</head>
+<body>	
+		<h3>2015-10王五专业性评价</h3>
+	<table  border="1px;" style="border-collapse: collapse;width: 800px;" bordercolor="#000000">
+		<tr align="center">
+			<td>序号</td>
+			<td>专业性</td>
+			<td>得分</td>
+			<td>评价人</td>				
+		</tr>
+		<c:forEach var="specialtyJX" items="${employeJX.specialtyJXList }" varStatus="status">
+			<tr align="center">
+				<td>${status.index+1 }</td>				
+				<td>${specialtyJX.specialtyName }</td>				
+				<td>${specialtyJX.score }</td>
+				<td>${specialtyJX.evaluateName}</td>				
+			</tr>
+		</c:forEach>
+	</table>
+	评语：做的很好！<br/>
+	总分    30分	
+</body>
+</html>

@@ -1,0 +1,89 @@
+package com.ync365.oa.bo;
+
+import java.util.Date;
+import java.util.List;
+
+public class EfficiencyBo {
+
+    /**
+     * 项目名称
+     */
+    private String projectNameBo;
+    
+    /**
+     * 部门名称 list
+     */
+    private List<Integer> departmentIdBos;
+    
+    /**
+     * 员工姓名 list
+     */
+    private List<Integer> employeIdBos;
+    
+    /**
+     * 计划时长
+     */
+    private List<Integer> planHoursBos;
+    
+    /**
+     * 计划开始时间
+     */
+    private List<String> planBeginTimes;
+    
+    /**
+     * 计划结束时间
+     */
+    private List<String> planEndTimes;
+
+    public String getProjectNameBo() {
+        return projectNameBo;
+    }
+
+    public void setProjectNameBo(String projectNameBo) {
+        this.projectNameBo = projectNameBo;
+    }
+
+    public List<Integer> getDepartmentIdBos() {
+        return departmentIdBos;
+    }
+
+    public void setDepartmentIdBos(List<Integer> departmentIdBos) {
+        this.departmentIdBos = departmentIdBos;
+    }
+
+    public List<Integer> getEmployeIdBos() {
+        return employeIdBos;
+    }
+
+    public void setEmployeIdBos(List<Integer> employeIdBos) {
+        this.employeIdBos = employeIdBos;
+    }
+
+    public List<Integer> getPlanHoursBos() {
+        return planHoursBos;
+    }
+
+    public void setPlanHoursBos(List<Integer> planHoursBos) {
+        this.planHoursBos = planHoursBos;
+    }
+
+    public List<String> getPlanBeginTimes() {
+        return planBeginTimes;
+    }
+
+    public void setPlanBeginTimes(List<String> planBeginTimes) {
+        this.planBeginTimes = planBeginTimes;
+    }
+
+    public List<String> getPlanEndTimes() {
+        return planEndTimes;
+    }
+
+    public void setPlanEndTimes(List<String> planEndTimes) {
+        this.planEndTimes = planEndTimes;
+    }
+
+    
+
+    
+}

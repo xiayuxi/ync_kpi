@@ -1,0 +1,40 @@
+package com.ync365.oa.web.performanceevaluation;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ync365.oa.entity.PerformanceEvaluation;
+import com.ync365.oa.query.PerformanceEvaluationQuery;
+import com.ync365.oa.service.performanceevaluation.PerformanceEvaluationService;
+
+@Controller
+@RequestMapping(value = "/admin/performanceEvaluation")
+public class AdminPerformanceEvaluationController {
+    @Autowired
+    private PerformanceEvaluationService performanceEvaluationService;
+    @RequestMapping(method = RequestMethod.GET)
+    public String index(){
+        return "performanceevaluation/adminPerformanceEvaluationList";
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseBody
+    public Page<PerformanceEvaluation> list(PerformanceEvaluationQuery q,Model model) {
+        Page<PerformanceEvaluation> page = performanceEvaluationService.find(q);
+        model.addAttribute("page", page);
+        return page;
+    }
+
+    @RequestMapping(value = "detail/{id}", method = RequestMethod.GET)
+    public String detail(@PathVariable("id") Long id, Model model) {
+        PerformanceEvaluation p = performanceEvaluationService.findOne(id);
+        model.addAttribute("p", p);
+        return "performanceevaluation/adminPerformanceEvaluationForm";
+    }
+}

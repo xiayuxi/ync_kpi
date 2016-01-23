@@ -1,0 +1,78 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="staticCtx" value="${pageContext.request.contextPath}/static"/>
+<head>
+	<title></title>	
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+<!-- jquery -->
+<script type="text/javascript" src="${staticCtx}/jquery/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="${staticCtx}/jquery/jqueryForm.js"></script>
+
+<script type="text/javascript">
+	var i = 0;//此变量为list集合的索引
+	//增加一个新的专业性
+	function addSpecialtyName(){		
+		i = i + 1;
+		var html = "专业性：<input type='text' name='specialtyList[" + i + "].name' /><br/>";		
+		$("#specialty").append(html);
+	}	
+	//异步获取部门负责人
+	function mtName(){		
+		var departmentId = $("#departmentId").val();	
+		if (departmentId == null || departmentId == undefined || departmentId == '') { 			
+			$("#spanId").html("");
+		}else{
+			$.ajax({
+				type : "get",
+				url : "${ctx}/admin/specialty/getMt",
+				data : {
+					departmentId : departmentId
+				},
+				success : function(data) {	
+					$("#spanId").html(data.mt);	
+					$("#mt").attr("value",data.mt);
+					$("#departmentName").attr("value",data.name);
+				}
+			});
+		}		
+	}
+	//异步提交表单
+	function add(){			
+		$('#specialtyForm').ajaxSubmit(			
+			function(data){
+				if(data=="OK"){
+	    			art.dialog.close();	
+	    		    var win = art.dialog.open.origin;  
+	    		    win.location.reload();	    			
+	    		}
+			}
+		);
+	}
+	
+</script>
+</head>
+	
+<body>
+	<form id="specialtyForm" action="add" method="post">
+		添加专业性<br/><br/>
+		<div id="specialty">
+			专业性：<input id="" type="text" name="specialtyList[0].name" /><br/>
+		</div>
+		<input type="button" value="增加" onclick="addSpecialtyName()" /><br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;部门：
+				<select name="departmentId" id="departmentId" onchange="mtName()">	
+					<option value="">----</option>			
+					<c:forEach var="department" items="${departmentList }">					
+						<option value="${department.id }" >${department.name }</option>											
+					</c:forEach>
+				</select><br/>
+				<input type="hidden" id="departmentName" name="departmentName" value="" />
+		部门负责人：<span id="spanId"></span><br/><br/>	
+		<input type="hidden" id="mt" name="mt" value="" />
+		<input type="button" style="margin-left: 100px" onclick="add()" value="添加" />			
+	</form>
+</body>
+

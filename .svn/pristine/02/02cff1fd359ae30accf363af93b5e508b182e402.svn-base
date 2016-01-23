@@ -1,0 +1,68 @@
+package com.ync365.oa.bo;
+
+import java.util.List;
+
+public class SatisfactionDetailPage {
+
+	private String beEvaluatedName;
+	
+	private String beEvaluatedDepartmentName;
+	
+	private String evaluatedTime;
+	
+	private String projectNum;
+	
+	private List <SatisfactionGroupByProject> list ;
+	
+	private SatisfactionGroupByProject detail;
+	
+	public SatisfactionGroupByProject getDetail() {
+		return detail;
+	}
+
+	public void setDetail(SatisfactionGroupByProject detail) {
+		this.detail = detail;
+	}
+
+	public List<SatisfactionGroupByProject> getList() {
+		return list;
+	}
+
+	public void setList(List<SatisfactionGroupByProject> list) {
+		this.list = list;
+	}
+
+	public String getBeEvaluatedName() {
+		return beEvaluatedName;
+	}
+
+	public void setBeEvaluatedName(String beEvaluatedName) {
+		this.beEvaluatedName = beEvaluatedName;
+	}
+
+	public String getBeEvaluatedDepartmentName() {
+		return beEvaluatedDepartmentName;
+	}
+
+	public void setBeEvaluatedDepartmentName(String beEvaluatedDepartmentName) {
+		this.beEvaluatedDepartmentName = beEvaluatedDepartmentName;
+	}
+
+	public String getEvaluatedTime() {
+		return evaluatedTime;
+	}
+
+	public void setEvaluatedTime(String evaluatedTime) {
+		this.evaluatedTime = evaluatedTime;
+	}
+
+	public String getProjectNum() {
+		return projectNum;
+	}
+
+	public void setProjectNum(String projectNum) {
+		this.projectNum = projectNum;
+	}
+	
+	
+}

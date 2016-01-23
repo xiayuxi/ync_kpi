@@ -1,0 +1,247 @@
+package com.ync365.oa.entity;
+
+import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "efficiency")
+public class Efficiency extends IdEntity{
+
+    /**
+     * 员工姓名
+     */
+    private String employe_name;
+    
+    /**
+     * 部门名称
+     */
+    private String department_name;
+    
+    /**
+     * 员工标号
+     */
+    private Long employe_code; 
+    
+    /**
+     * 员工id
+     */
+    private Long employe_id;
+    
+    /**
+     * 部门id
+     */
+    private Long department_id;
+    
+    /**
+     * 项目id
+     */
+    private Long project_id;
+    
+    /**
+     * 项目名称
+     */
+    private String project_name;
+    
+    /**
+     * 计划开始时间
+     */
+    private Date plan_begin_time;
+    
+    /**
+     * 计划结束时间啊
+     */
+    private Date plan_end_time;
+    
+    /**
+     * 计划 时长
+     */
+    private Integer plan_hours;
+    
+    /**
+     * 实际 开始时间
+     */
+    private Date actual_begin_time;
+    
+    /**
+     * 实际  结束时间
+     */
+    private Date actual_end_time;
+    
+    /**
+     * 实际时长
+     */
+    private Integer actual_hours ;
+    
+    /**
+     * 产出开始时间
+     */
+    private Date output_begin_time;
+    
+    /**
+     * 产出 结束时间
+     */
+    private Date  output_end_time;
+    
+    /**
+     * 产出时长
+     */
+    private Integer output_hours;
+    
+    /**
+     * 
+     */
+    private String pm;
+    
+    /**
+     * 创建时间
+     */
+    private Date create_time;
+
+    public String getEmploye_name() {
+        return employe_name;
+    }
+
+    public void setEmploye_name(String employe_name) {
+        this.employe_name = employe_name;
+    }
+
+    public String getDepartment_name() {
+        return department_name;
+    }
+
+    public void setDepartment_name(String department_name) {
+        this.department_name = department_name;
+    }
+
+    public Long getEmploye_code() {
+        return employe_code;
+    }
+
+    public void setEmploye_code(Long employe_code) {
+        this.employe_code = employe_code;
+    }
+
+    public Long getEmploye_id() {
+        return employe_id;
+    }
+
+    public void setEmploye_id(Long employe_id) {
+        this.employe_id = employe_id;
+    }
+
+    public Long getDepartment_id() {
+        return department_id;
+    }
+
+    public void setDepartment_id(Long department_id) {
+        this.department_id = department_id;
+    }
+
+    public Long getProject_id() {
+        return project_id;
+    }
+
+    public void setProject_id(Long project_id) {
+        this.project_id = project_id;
+    }
+
+    public String getProject_name() {
+        return project_name;
+    }
+
+    public void setProject_name(String project_name) {
+        this.project_name = project_name;
+    }
+
+    public Date getPlan_begin_time() {
+        return plan_begin_time;
+    }
+
+    public void setPlan_begin_time(Date plan_begin_time) {
+        this.plan_begin_time = plan_begin_time;
+    }
+
+    public Date getPlan_end_time() {
+        return plan_end_time;
+    }
+
+    public void setPlan_end_time(Date plan_end_time) {
+        this.plan_end_time = plan_end_time;
+    }
+
+    public Integer getPlan_hours() {
+        return plan_hours;
+    }
+
+    public void setPlan_hours(Integer plan_hours) {
+        this.plan_hours = plan_hours;
+    }
+
+    public Date getActual_begin_time() {
+        return actual_begin_time;
+    }
+
+    public void setActual_begin_time(Date actual_begin_time) {
+        this.actual_begin_time = actual_begin_time;
+    }
+
+    public Date getActual_end_time() {
+        return actual_end_time;
+    }
+
+    public void setActual_end_time(Date actual_end_time) {
+        this.actual_end_time = actual_end_time;
+    }
+
+    public Integer getActual_hours() {
+        return actual_hours;
+    }
+
+    public void setActual_hours(Integer actual_hours) {
+        this.actual_hours = actual_hours;
+    }
+
+    public Date getOutput_begin_time() {
+        return output_begin_time;
+    }
+
+    public void setOutput_begin_time(Date output_begin_time) {
+        this.output_begin_time = output_begin_time;
+    }
+
+    public Date getOutput_end_time() {
+        return output_end_time;
+    }
+
+    public void setOutput_end_time(Date output_end_time) {
+        this.output_end_time = output_end_time;
+    }
+
+    public Integer getOutput_hours() {
+        return output_hours;
+    }
+
+    public void setOutput_hours(Integer output_hours) {
+        this.output_hours = output_hours;
+    }
+
+    public String getPm() {
+        return pm;
+    }
+
+    public void setPm(String pm) {
+        this.pm = pm;
+    }
+
+    public Date getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(Date create_time) {
+        this.create_time = create_time;
+    }
+    
+    
+}

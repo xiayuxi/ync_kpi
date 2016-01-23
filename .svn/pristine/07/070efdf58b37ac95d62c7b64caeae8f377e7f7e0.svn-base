@@ -1,0 +1,101 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+
+<html>
+<head>
+	<title>效能-项目页面</title>
+	<!-- 时间控件 css  -->
+	<link rel="stylesheet" type="text/css" href="${ctx}/static/My97DatePicker/skin/WdatePicker.css" />
+	<!-- 时间控件js  -->
+	<script type="text/javascript" src="${ctx}/static/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+	<form id="" action="${ctx}/efficiency/edit" method="post" >
+		<div class="control-group">
+			<label for="" class="control-label">项目名称:</label>
+			<div class="controls">
+				<input type="text" id="" name="projectNameBo" value="${project.name }" class="input-large required" minlength="3"/>
+				<input type ="text" id="" name="proId" value="${project.id }" />
+			</div>
+		</div>	
+		
+		<c:forEach items="${list}" var="listTemp" varStatus="s" >
+			<div class="control-group">
+				<label for="" class="control-label">部门1:</label>
+				<div class="controls">
+					<input type="text" id="" name="departmentIdBos[${s.index}]" value = "${listTemp.departmentName }" class="input-large required"  minlength="1"/>
+					<input type ="text" id="" name="efficiencyIds[${s.index}]" value="${listTemp.id }" />
+				</div>
+			</div>	
+			<div class="control-group">
+				<label for="" class="control-label">姓名1:</label>
+				<div class="controls">
+					<input type="text" id="" name="employeIdBos[${s.index}]" value = "${listTemp.employeName }" class="input-large required" minlength="1"/>
+				</div>
+			</div>	
+			<div class="control-group">
+				<label for="" class="control-label">计划时间1:</label>
+				<div class="controls">
+					<input type="text" id="" name="planHoursBos[${s.index}]" value = "${listTemp.planHours}" class="input-large required" minlength="1"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="" class="control-label">注册时间1：</label>
+				<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})"
+						type="text" id="" value= "${listTemp.planBeginTime}" name="planBeginTimes[${s.index}]" />
+						——
+				<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})" 
+						type="text" id="" value= "${listTemp.planEndTime}" name="planEndTimes[${s.index}]" />&nbsp; &nbsp;
+			</div>
+			
+			<br>
+			
+		</c:forEach>
+		
+		
+			<div class="control-group">
+				<label for="" class="control-label">部门4:</label>
+				<div class="controls">
+					<input type="text" id="" name="departmentIdBos[4]" class="input-large required"  minlength="1"/>
+					<input type ="text" id="" name="efficiencyIds[4]"  />
+				</div>
+			</div>	
+			<div class="control-group">
+				<label for="" class="control-label">姓名4:</label>
+				<div class="controls">
+					<input type="text" id="" name="employeIdBos[4]" class="input-large required" minlength="1"/>
+				</div>
+			</div>	
+			<div class="control-group">
+				<label for="" class="control-label">计划时间4:</label>
+				<div class="controls">
+					<input type="text" id="" name="planHoursBos[4]" class="input-large required" minlength="1"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="" class="control-label">注册时间4：</label>
+				<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})"
+						type="text" id=""  name="planBeginTimes[4]" />
+						——
+				<input class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd '})" 
+						type="text" id="" name="planEndTimes[4]" />&nbsp; &nbsp;
+			</div>
+			
+			<br>
+			
+		
+		
+		
+		
+		<div class="form-actions">
+			<input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;	
+			<input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
+		</div>
+	</form>
+
+	<script>
+	</script>
+</body>
+</html>

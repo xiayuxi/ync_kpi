@@ -1,0 +1,93 @@
+package com.ync365.oa.web.efficiency;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.ync365.oa.bo.EfficiencyBo;
+import com.ync365.oa.bo.EfficiencyViewVo;
+import com.ync365.oa.entity.Department;
+import com.ync365.oa.entity.Efficiency;
+import com.ync365.oa.entity.Project;
+import com.ync365.oa.service.department.DepartmentService;
+import com.ync365.oa.service.efficiency.EfficiencyService;
+import com.ync365.oa.service.project.ProjectService;
+
+
+
+
+@Controller
+@RequestMapping(value = "/efficiency")
+public class EfficiencyController {
+    
+    @Autowired
+    private EfficiencyService efficiencyService;
+    
+    @Autowired
+    private ProjectService projectService;
+    
+    @Autowired
+    private DepartmentService departmentService;
+
+	@RequestMapping(value = "/list")
+	public String list( @RequestParam(value = "proId") int proId,Model model) {
+	    Project project = projectService.findById(proId);
+        List<Efficiency> list = new ArrayList<Efficiency>();
+        list = efficiencyService.findByProjectId(proId);
+        model.addAttribute("project",project);
+        model.addAttribute("list", list);
+		return "efficiency/list";
+	}
+	
+	@RequestMapping(value = "/addPage",method = RequestMethod.GET)
+    public String addPage() {
+        return "efficiency/addPage";
+    }
+	
+	@RequestMapping(value = "/add",method = RequestMethod.POST)
+    public String add(EfficiencyBo efficiencyBo) {
+	    efficiencyService.add(efficiencyBo);
+        return "efficiency/addPage";
+    }
+	
+	@RequestMapping(value = "/editPage",method = RequestMethod.GET)
+    public String editPage( @RequestParam(value = "proId") int proId,Model model) {
+	    Project project = projectService.findById(proId);
+	    List<Department> departmentList = departmentService.getAll();
+	    List<EfficiencyViewVo> list = new ArrayList<EfficiencyViewVo>();
+	    
+	    list = efficiencyService.findListByProjectId(proId);
+	    model.addAttribute("project",project);
+	    model.addAttribute("list", list);
+	    model.addAttribute("departmentList", departmentList);
+        return "efficiency/editPage";
+    }
+	
+	@RequestMapping(value = "/edit",method = RequestMethod.POST)
+    public String edit(EfficiencyBo efficiencyBo) {
+        efficiencyService.edit(efficiencyBo);
+        return "efficiency/addPage";
+    }
+
+
+	 /**时间自动格式化
+     * @author xieang
+     * 2015年9月15日
+     * @param bin
+     */
+   /* @InitBinder
+    public void InitBinder(ServletRequestDataBinder bin) {
+        bin.registerCustomEditor(Date.class, new CustomDateEditor( new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), true));
+    }*/
+}

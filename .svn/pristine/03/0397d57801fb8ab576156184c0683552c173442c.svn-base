@@ -1,0 +1,26 @@
+package com.ync365.oa.web.department;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.ync365.oa.service.department.DepartmentService;
+
+@Controller
+@RequestMapping(value = "/department")
+public class DepartmentController {
+	
+	@Autowired
+	private DepartmentService departmentService;
+	
+	@RequestMapping(value = "/add")
+	public String add() {
+		return "";
+	}
+	
+	@RequestMapping(value = "/addPage")
+	public String addPage() {
+		
+		return "department/departmentAdd";
+	}
+}

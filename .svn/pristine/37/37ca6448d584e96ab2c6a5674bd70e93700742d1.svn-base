@@ -1,0 +1,50 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="staticCtx" value="${pageContext.request.contextPath}/static"/>
+<html>
+<head>
+	<title>专业绩效页面</title>
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<script type="text/javascript">
+	
+</script>
+</head>
+<body>	
+	<table  border="1px;" style="border-collapse: collapse;width: 800px;" bordercolor="#000000">
+		<tr align="center">
+			<td>序号</td>
+			<td>人员</td>
+				<c:forEach var="employeJX" items="${employeJXList }">				
+					<c:forEach var="specialty" items="${employeJX.specialtyList }" >
+						<td>${specialty.name }</td>
+					</c:forEach>
+				</c:forEach>
+			<td>总分</td>
+			<td>评语</td>
+			<td>评价人</td>	
+			<td>操作</td>			
+		</tr>
+		<c:forEach var="employeJX" items="${employeJXList }" varStatus="status"  end="${employeJXList.size()/2-1 }">
+			<tr align="center">
+				<td>${status.index+1 }</td>				
+				<td>${employeJX.beEvaluatedName }</td>					
+					<c:forEach var="specialtyJX" items="${employeJX.specialtyJXList }" >					
+						<td>${specialtyJX.score }</td>										
+					</c:forEach> 
+					<%-- <td>${employeJX.totalScore }</td>	
+					<td>${employeJX.totalScore }</td> 	 --%>
+				<td>${employeJX.totalScore }</td>							
+				<td>${employeJX.comment }</td>
+				<td>${employeJX.evaluateName}</td>	
+				<td>
+					<a href="javascript:void(0)" onclick="">评价</a>					
+				</td>			
+			</tr>
+		</c:forEach>
+	</table>	
+</body>
+</html>

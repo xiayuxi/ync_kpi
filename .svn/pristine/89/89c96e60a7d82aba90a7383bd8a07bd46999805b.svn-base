@@ -1,0 +1,10 @@
+package com.ync365.oa.web.satisfaction;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping(value = "/efficiency")
+public class SatisfactionController {
+
+}

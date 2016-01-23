@@ -1,0 +1,40 @@
+package com.ync365.oa.repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.ync365.oa.entity.Department;
+import com.ync365.oa.entity.Employe;
+
+public class DepartmentDaoTest extends BaseTest{
+	
+	@Autowired
+	DepartmentDao departmentDao;
+	
+	@Autowired
+	EmployeDao employeDao;
+	
+	@Test
+	public void test(){
+		/*Department d=departmentDao.findOne(2l);
+		System.out.println("name>>>>>>"+d.getName());
+		
+		for(Employe e:d.getEs()){
+			System.out.println("e-name>>>>>"+e.getName());
+		}*/
+		List<Department> ds=departmentDao.findAll();
+		
+		List<Department> ds1=new ArrayList<Department>();
+		for(Department d:ds){
+			for(Employe e:d.getEs()){
+				if(e.getName().equals("王五")){
+					ds1.add(d);
+				}
+			}
+		}
+		System.out.println("size>>>>>"+ds1.size());
+	}
+}

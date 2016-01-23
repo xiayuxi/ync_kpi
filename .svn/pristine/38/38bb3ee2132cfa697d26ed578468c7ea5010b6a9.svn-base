@@ -1,0 +1,81 @@
+package com.ync365.oa.web.satisfaction;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.ync365.oa.bo.SatisfactionDetailPage;
+import com.ync365.oa.bo.SatisfactionGroupByProject;
+import com.ync365.oa.entity.Satisfaction;
+import com.ync365.oa.entity.SatisfactionResult;
+import com.ync365.oa.query.SatisfactionQuery;
+import com.ync365.oa.query.SatisfactionResultQuery;
+import com.ync365.oa.service.satisfaction.SatisfactionService;
+import com.ync365.oa.service.satisfactionresult.SatisfactionResultService;
+
+@Controller
+@RequestMapping(value = "/satisfactionAdmin")
+public class SatisfactionAdminController {
+
+	@Autowired
+	private SatisfactionService satisfactionServic;
+	
+	@Autowired
+	private SatisfactionResultService satisfactionResultService;
+	
+	@RequestMapping(value = "/list" , method = RequestMethod.GET)
+	public String list(Model model,SatisfactionQuery q) {
+		Page <Satisfaction> page = null ;
+		page = satisfactionServic.findAll(q);
+		for (Satisfaction satisfaction : page.getContent()) {
+			satisfaction.setEvaluatedName(
+					satisfaction.getEvaluatedDepartmentName() + "," + satisfaction.getEvaluatedName());
+			satisfaction.setBeEvaluatedName(
+					satisfaction.getBeEvaluatedDepartmentName()+","+satisfaction.getBeEvaluatedName());
+			
+		}
+		model.addAttribute("page", page);
+        return "satisfactionAdmin/satisfactionList";
+	}
+	
+	@RequestMapping(value = "/view/{id}" , method = RequestMethod.GET)
+	public String view(Model model,@PathVariable Long id) {
+		Satisfaction satisfaction = satisfactionServic.findOne(id);
+		model.addAttribute("satisfaction", satisfaction);
+        return "satisfactionAdmin/satisfactionView";
+	}
+	@RequestMapping(value = "/listResult" , method = RequestMethod.GET)
+	public String listResult(Model model,SatisfactionResultQuery q) {
+		Page <SatisfactionResult> page = null ;
+		page = satisfactionResultService.buildPageRequest(q);
+		model.addAttribute("page", page);
+        return "satisfactionAdmin/satisfactionResultList";
+	}
+	@RequestMapping(value = "/viewResult/{id}" , method = RequestMethod.GET)
+	public String viewResult(Model model,@PathVariable Long id) {
+		SatisfactionDetailPage satisfactionDetailPage = satisfactionServic.searchGroupByProject(id);
+		model.addAttribute("satisfactionDetailPage", satisfactionDetailPage);
+        return "satisfactionAdmin/satisfactionResultView";
+	}
+	/**时间自动格式化
+	    * @author xieang
+	    * 2015年9月15日
+	    * @param bin
+	    */
+	  @InitBinder
+	   public void InitBinder(ServletRequestDataBinder bin) {
+	       bin.registerCustomEditor(Date.class, new CustomDateEditor( new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), true));
+	   }
+	
+}

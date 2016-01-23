@@ -1,0 +1,52 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page
+	import="org.apache.shiro.web.filter.authc.FormAuthenticationFilter"%>
+<%@ page import="org.apache.shiro.authc.ExcessiveAttemptsException"%>
+<%@ page import="org.apache.shiro.authc.IncorrectCredentialsException"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+
+<html>
+<head>
+<title>效能-项目页面</title>
+<script type="text/javascript">
+		function js_method_fun(eff_id,t_id){
+			var effId = eff_id;
+			var tId = t_id;
+			var a = "${ctx}/efficiency/list?proId="+effId;
+			 $("#iframe_id").attr("src",a);
+		}
+	</script>
+</head>
+
+<body>
+
+
+	<%-- <c:forEach items="${projectList}" var="listTemp" varStatus="s" >
+			<a href="${ctx}/efficiency/list?proId=${listTemp.id}">${listTemp.name}</a>
+			<br/>
+		</c:forEach> --%>
+	<div class="container-fluid ">
+		<div class="row-fluid">
+			<div class="span2">
+				<ul class="nav nav-tabs nav-stacked">
+					<li class="nav-header"><h4>项目列表</h4></li>
+					<c:forEach items="${projectList}" var="listTemp" varStatus="s">
+						<%-- <a href="${ctx}/efficiency/list?proId=${listTemp.id}"></a> --%>
+						<li><a href="javascript:void(0);" id="t_${s.index}"
+							onclick="js_method_fun(${listTemp.id},this.id)">${listTemp.name}</a>
+						</li>
+					</c:forEach>
+				</ul>
+			</div>
+			<div class="span10">
+				<div class="container-fluid ">
+					<div class="row-fluid">
+						<iframe id="iframe_id" src="" style="width: 100%;height: 1300px;border: 0px"> </iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"  pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>导入员工</title>
+<script src="${ctx }/static/My97/WdatePicker.js"></script>
+<script type="text/javascript">
+function f(){
+	var  myselect=document.getElementById("selectDept");
+	var index=myselect.selectedIndex ; 
+	var  id=myselect.options[index].value;
+	var text=myselect.options[index].text;
+	 
+	document.getElementById("departmentId").value=id;
+	document.getElementById("departmentName").value=text;
+	
+}
+function selectIsMt(){
+	var isMt1=$("input[id='isMt1']:checked").val();
+	var isMt2=$("input[id='isMt2']:checked").val();
+
+	if(isMt1 == "on" ){
+		$("#isMt1").val(1);
+	}
+	
+	if(isMt2 == "on" ){
+		$("#isMt2").val(0);
+	}
+}
+
+function selectIsPm() {
+	var isPm1=$("input[id='isPm1']:checked").val();
+	var isPm2=$("input[id='isPm2']:checked").val();
+
+	if(isPm1 == "on" ){
+		$("#isPm1").val(1);
+	}
+	
+	if(isPm2 == "on" ){
+		$("#isPm2").val(0);
+	}
+}
+</script>
+<script type="text/javascript">
+ function checkemail(e){
+	 var email=document.getElementById("email").value;
+	 var re=re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+	 if(email == null || email == ""){
+		 alert("请输入邮箱");
+		 e.focus();
+	 }if(re.test(email)){
+		 return true;
+	 }else{
+		 alert("请输入正确的邮箱");
+		 e.focus();
+	 }
+ }
+ function checkmobil(e){
+	 var mobil=document.getElementById("mobile").value;
+	 if(mobil == null || mobil ==""){
+		 return true;
+	 }
+	 
+	if (mobil != null || mobil == "") {
+			var re = /^1\d{10}$/
+			if (re.test(mobil)) {
+				return true;
+			} else {
+				alert("请输入正确的手机号码");
+				e.focus(); 
+			}
+		}
+}
+</script>
+</head>
+<body>
+	<form id="inputForm" action="${ctx}/admin/employe/add" method="post" class="form-horizontal">
+		<fieldset>
+			<legend><small>导入员工信息</small></legend>
+			<div class="control-group">
+				<label for="name" class="control-label">姓名:</label>
+				<div class="controls">
+					<input type="text" id="name" name="name" class="input-large required" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="name" class="control-label">工号:</label>
+				<div class="controls">
+					<input type="text" id="code" name="code" class="input-large required" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="name" class="control-label">邮箱:</label>
+				<div class="controls">
+					<input type="text" id="email" name="email" class="input-large required" onblur="checkemail(this)"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="name" class="control-label">手机:</label>
+				<div class="controls">
+					<input type="text" id="mobile" name="mobile" class="input-large required" onblur="checkmobil(this)"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="departmentName" class="control-label">部门:</label>
+				<div class="controls">
+				<input type="hidden" id="departmentName" name="departmentName" class="input-large required"/>
+				<input type="hidden" id="departmentId" name="departmentId" class="input-large required">  
+					<select id="selectDept" onclick="f()">
+						<option>----请选择-----</option>
+						<c:forEach items="${dept }" var="dept">
+							<option value="${dept.id}" >${dept.name}</option>
+						</c:forEach>
+					</select>
+				</div>
+			</div>
+			 <div class="control-group">
+				<label for="createTime" class="control-label">入职时间:</label>
+				<div class="controls">
+					<input type="text" id="createTime" name="employmentDate" class="Wdate"  onfocus="new WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})"/>
+				</div>
+			</div> 
+			<div class="control-group">
+				<label for="departmentName" class="control-label">职位:</label>
+				<div class="controls">
+					<input type="text" id="position" name="position" class="input-large required"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="departmentName" class="control-label">是否为MT负责人:</label>
+				<div class="controls">
+					 <input type="radio"  id="isMt1" name="isMt" onclick="selectIsMt();">是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					 <input type="radio"  id="isMt2" name="isMt" onclick="selectIsMt();">否 
+				</div>
+			</div>
+					<div class="control-group">
+				<label for="departmentName" class="control-label">是否为项目负责人:</label>
+				<div class="controls">
+					 <input type="radio"  id="isPm1" name="isPm" onclick="selectIsPm();">是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					 <input type="radio"  id="isPm2" name="isPm" onclick="selectIsPm();">否 
+				</div>
+			</div> 	
+			<div class="form-actions">
+				<input id="submit_btn" class="btn btn-primary" type="submit" value="提交" />&nbsp;	
+				<input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
+			</div>
+		</fieldset>
+	</form>
+</body>
+</html>

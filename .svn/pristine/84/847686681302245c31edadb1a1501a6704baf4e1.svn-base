@@ -1,0 +1,86 @@
+package com.ync365.oa.web.efficiencyResult;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ync365.oa.entity.Department;
+import com.ync365.oa.entity.Efficiency;
+import com.ync365.oa.entity.EfficiencyResult;
+import com.ync365.oa.entity.Project;
+import com.ync365.oa.query.EfficiencyQuery;
+import com.ync365.oa.query.EfficiencyResultQuery;
+import com.ync365.oa.service.department.DepartmentService;
+import com.ync365.oa.service.efficiencyResult.EfficiencyResultService;
+import com.ync365.oa.service.project.ProjectService;
+
+@Controller
+@RequestMapping(value="/admin/efficiencyResult")
+public class EfficiencyResultController {
+	
+	@Autowired
+	private EfficiencyResultService  efficiencyResultService;
+	
+	@Autowired
+	private DepartmentService  departmentService;
+	
+	@Autowired
+	private ProjectService projectService;
+	
+	/***
+	 * 页面列表
+	 */
+	@RequestMapping(value="/list",method =RequestMethod.GET)
+	public String list(EfficiencyResultQuery erq,Model model){
+		List<Department> d=departmentService.getAll();
+		model.addAttribute("dept",d);
+		
+		Page<EfficiencyResult> efficiencyResult =efficiencyResultService.find(erq);
+		model.addAttribute("er", efficiencyResult);
+		return "efficiencyResult/efficiencyResultList";
+	}
+	
+	/***
+	 * 查看员工本月参与的项目
+	 */
+	
+	@RequestMapping(value="/view/{id}",method = RequestMethod.GET)
+	public String selectById(@PathVariable long id,Model model){
+		EfficiencyResult er=efficiencyResultService.findOne(id);
+		model.addAttribute("er", er);
+
+		EfficiencyQuery eq=new EfficiencyQuery();
+		/*查找某个月改名员工参加*/
+		eq.setEmployeCode(er.getEmployeCode());
+		eq.setCreateTime(er.getCreateTime()); 
+		
+		List<Efficiency> es=efficiencyResultService.findEmployeEfficiency(eq);
+		model.addAttribute("es", es);
+		
+		return "efficiencyResult/efficiencyResultForm";
+	}
+	
+	@RequestMapping(value="selectBypId/{pid}",method = RequestMethod.GET)
+	@ResponseBody
+	public String selectBypId(@PathVariable Integer pid,Model model){
+		Project p=projectService.findById(pid);
+		if(p.getState()!=null){
+				
+		if(p.getState() == 1){
+			return "已完成";
+		}else{
+			return "进行中";
+		}
+		
+		}else{
+			return "";	
+		}
+	}
+}

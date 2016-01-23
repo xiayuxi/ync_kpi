@@ -1,0 +1,10 @@
+package com.ync365.oa.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+import com.ync365.oa.entity.Employe;
+
+public interface EmployeDao extends JpaRepository<Employe, Long>,JpaSpecificationExecutor<Employe> {
+
+}

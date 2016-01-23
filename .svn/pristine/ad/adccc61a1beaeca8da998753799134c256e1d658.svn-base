@@ -1,0 +1,121 @@
+package com.ync365.oa.web.specialty;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.jboss.logging.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ync365.commons.utils.CurrentUser;
+import com.ync365.oa.bo.SpecialtyJXBo;
+import com.ync365.oa.entity.Specialty;
+import com.ync365.oa.entity.SpecialtyJX;
+import com.ync365.oa.service.account.ShiroDbRealm.ShiroUser;
+import com.ync365.oa.service.employe.EmployeService;
+import com.ync365.oa.service.specialty.SpecialtyJXService;
+
+/**
+ * 专业性绩效----前台控制层
+ * 
+ * @author lyh
+ *
+ */
+@Controller
+@RequestMapping(value = "/specialtyJX")
+public class SpecialtyJXController {
+	@Autowired
+	private SpecialtyJXService specialtyJXService;
+	@Autowired
+	private EmployeService employeService;
+
+	/**
+	 * 某个员工的专业性绩效
+	 * 
+	 * @param beEvaluatedId
+	 * @param createTime
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/employeJX")
+	public String employeJX(Date createTime, Model model) {
+		// 获取登录人的id
+		ShiroUser currentUser = CurrentUser.getCurrentUser();
+		SpecialtyJXBo employeJX = specialtyJXService.getSpecialtyJXByEmployeId(currentUser.id, createTime);
+		model.addAttribute("employeJX", employeJX);
+		return "specialtyJX/employeJX";
+	}
+
+	/**
+	 * 按月份获取某个MT负责人下的所有员工的专业性评价列表(本月评价上个月的)
+	 * 
+	 * @param beEvaluatedId
+	 * @param createTime
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/employeJXList")
+	public String list(Date createTime, Model model) {
+		// 获取登录人的id
+		ShiroUser currentUser = CurrentUser.getCurrentUser();
+		List<SpecialtyJXBo> employeJXList = specialtyJXService.getAllSpecialtyJXByEvaluatedId(
+				employeService.findOne(currentUser.id).getDepartmentId(), createTime);
+		List<Specialty> speList = specialtyJXService.getSpecialtyListByDepartmentId(
+				employeService.findOne(currentUser.id).getDepartmentId());
+		model.addAttribute("employeJXList", employeJXList);
+		model.addAttribute("speList", speList);
+		return "specialtyJX/employeJXList";
+	}
+
+	/**
+	 * 去评价或修改专业性页面
+	 * 
+	 * @param beEvaluatedId
+	 * @param createTime
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/evaluatePage")
+	public String evaluate(Long beEvaluatedId, Date createTime, Model model) {
+		SpecialtyJXBo employeJX = specialtyJXService.getSpecialtyJXByEmployeId(beEvaluatedId, createTime);
+		model.addAttribute("employeJX", employeJX);
+		return "specialtyJX/evaluate";
+	}
+
+	/**
+	 * 专业性--绩效评价或修改绩效评价(每月1号至3号可以修改或评价上个月的专业性)
+	 */
+	@RequestMapping(value = "/evaluate", method = RequestMethod.POST)
+	@ResponseBody
+	public String evaluate(SpecialtyJXBo specialtyJXBo, int operation) {
+		String result = "";
+		try {
+			specialtyJXService.evaluate(specialtyJXBo.getSpecialtyJXList(), operation);
+			result = "OK";
+		} catch (Exception e) {
+			result = "Failed";
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @author lyh
+	 * @param bin
+	 */
+	@InitBinder
+	public void InitBinder(ServletRequestDataBinder bin) {
+		bin.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), true));
+		bin.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
+		bin.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM"), true));
+	}
+}

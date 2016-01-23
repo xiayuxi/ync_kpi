@@ -1,0 +1,89 @@
+package com.ync365.oa.web.specialty;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.ync365.oa.entity.Specialty;
+import com.ync365.oa.query.SpecialtyQuery;
+import com.ync365.oa.service.specialty.SpecialtyService;
+
+/**
+ * 专业性----后台控制层
+ * @author lyh
+ *
+ */
+@Controller
+@RequestMapping(value = "/specialty")
+public class SpecialtyController {
+	@Autowired
+	private SpecialtyService specialtyService;
+	
+	/**
+	 * 所有部门的专业性列表
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/list")
+	public String list(Model model) {
+		List<Specialty> specialtyList = specialtyService.getAllSpecialty();
+		model.addAttribute("specialtyList", specialtyList);
+		return "specialty/list";
+	}
+	
+	/**
+	 * 多条件组合查询某个部门的专业性
+	 * @param specialty
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/query")
+	public String list(SpecialtyQuery specialty,Model model) {
+		List<Specialty> specialtyList = specialtyService.getSpecialtyByMultiple(specialty);
+		model.addAttribute("specialtyList", specialtyList);
+		return "specialty/list";
+	}	
+	
+	/**
+	 * 弹窗----添加专业性
+	 * @return
+	 */
+	@RequestMapping(value = "/addPage",method = RequestMethod.GET)
+    public String addPage() {
+        return "specialty/add";
+    }
+	/**
+	 * 添加专业性
+	 * @return
+	 */
+	@RequestMapping(value = "/add",method = RequestMethod.POST)
+    public String add(Specialty specialty) {
+		specialtyService.addSpecialty(specialty);
+        return "specialty/list";
+    }
+	
+	/**
+	 * 弹窗----删除专业性
+	 * @return
+	 */
+	@RequestMapping(value = "/deletePage",method = RequestMethod.POST)
+	public String deletePage(Long specialtyId) {
+		specialtyService.deleteSpecialty(specialtyId);
+		return "specialty/delete";
+	}	
+	
+	/**
+	 * 删除专业性
+	 * @return
+	 */
+	@RequestMapping(value = "/delete",method = RequestMethod.POST)
+	public String delete(Long specialtyId) {
+		specialtyService.deleteSpecialty(specialtyId);
+		return "specialty/list";
+	}	
+	
+}

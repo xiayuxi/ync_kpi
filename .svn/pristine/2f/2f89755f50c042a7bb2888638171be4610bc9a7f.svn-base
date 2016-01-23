@@ -1,0 +1,101 @@
+package com.ync365.oa.query;
+
+import java.util.Date;
+
+public class EfficiencyQuery {
+    private Long id;
+    private String employeName;
+    private Integer employeCode; 
+    private String projectName;
+    private Date planBeginTime;
+    private Date planEndTime;
+    private Integer planHours;
+    private Integer actualHours ;
+    private Integer outputHours;
+    private String pm;
+    private Integer pageIndex;
+    private Integer pageSize;
+    private String sort;
+    
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public String getEmployeName() {
+        return employeName;
+    }
+    public void setEmployeName(String employeName) {
+        this.employeName = employeName;
+    }
+    public Integer getEmployeCode() {
+        return employeCode;
+    }
+    public void setEmployeCode(Integer employeCode) {
+        this.employeCode = employeCode;
+    }
+    public String getProjectName() {
+        return projectName;
+    }
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+    public Date getPlanBeginTime() {
+        return planBeginTime;
+    }
+    public void setPlanBeginTime(Date planBeginTime) {
+        this.planBeginTime = planBeginTime;
+    }
+    public Date getPlanEndTime() {
+        return planEndTime;
+    }
+    public void setPlanEndTime(Date planEndTime) {
+        this.planEndTime = planEndTime;
+    }
+    public Integer getPlanHours() {
+        return planHours;
+    }
+    public void setPlanHours(Integer planHours) {
+        this.planHours = planHours;
+    }
+    public Integer getActualHours() {
+        return actualHours;
+    }
+    public void setActualHours(Integer actualHours) {
+        this.actualHours = actualHours;
+    }
+    public Integer getOutputHours() {
+        return outputHours;
+    }
+    public void setOutputHours(Integer outputHours) {
+        this.outputHours = outputHours;
+    }
+    public String getPm() {
+        return pm;
+    }
+    public void setPm(String pm) {
+        this.pm = pm;
+    }
+    public Integer getPageIndex() {
+        return pageIndex;
+    }
+    public void setPageIndex(Integer pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+    public Integer getPageSize() {
+        return pageSize;
+    }
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+    public String getSort() {
+        return sort;
+    }
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+    
+    
+    
+}

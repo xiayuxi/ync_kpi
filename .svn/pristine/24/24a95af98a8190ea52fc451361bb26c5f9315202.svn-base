@@ -1,0 +1,135 @@
+package com.ync365.oa.service.performanceevaluation;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
+
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+
+import com.ync365.commons.utils.StringUtils;
+import com.ync365.oa.entity.PerformanceEvaluation;
+import com.ync365.oa.query.PerformanceEvaluationQuery;
+import com.ync365.oa.repository.PerformanceEvaluationDao;
+
+@Component
+@Transactional
+public class PerformanceEvaluationService {
+    @Autowired
+    private PerformanceEvaluationDao performanceEvaluationDao;
+    private Logger log = LoggerFactory.getLogger(PerformanceEvaluationService.class);
+
+    /**
+     * 查询绩效
+     * @Title: find
+     * @Description: 
+     * @author: duan.zhao.qian
+     * @date: 2015年11月28日 下午3:43:08
+     * @version: 
+     *
+     * @param q
+     * @return
+     *
+     */
+    public Page<PerformanceEvaluation> find(final PerformanceEvaluationQuery q) {
+        Specification<PerformanceEvaluation> sp = new Specification<PerformanceEvaluation>() {
+
+            @Override
+            public Predicate toPredicate(Root<PerformanceEvaluation> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                List<Predicate> list = new ArrayList<>();
+                if (q.getId() != null) {
+                    list.add(cb.equal(root.get("id").as(Long.class), q.getId()));
+                }
+                if (StringUtils.isNotEmpty(q.getBeEvaluatedName())) {
+                    list.add(cb.equal(root.get("beEvaluatedName").as(String.class), q.getBeEvaluatedName()));
+                }
+                if (StringUtils.isNotEmpty(q.getDepartmentName())) {
+                    list.add(cb.equal(root.get("departmentName").as(String.class), q.getDepartmentName()));
+                }
+                if (StringUtils.isNotEmpty(q.getTotalGrade())) {
+                    list.add(cb.equal(root.get("totalGrade").as(String.class), q.getTotalGrade()));
+                }
+                if (q.getEfficiencyScore() != null) {
+                    list.add(cb.equal(root.get("efficiencyScore").as(Integer.class), q.getEfficiencyScore()));
+                }
+                if (q.getSpecialtyScore() != null) {
+                    list.add(cb.equal(root.get("specialtyScore").as(Integer.class), q.getSpecialtyScore()));
+                }
+                if (q.getLeaderAssessmentScore() != null) {
+                    list.add(cb.equal(root.get("leaderAssessmentScore").as(Integer.class),
+                            q.getLeaderAssessmentScore()));
+                }
+                if (q.getSatisfactionScore() != null) {
+                    list.add(cb.equal(root.get("satisfactionScore").as(Integer.class), q.getSatisfactionScore()));
+                }
+                if (q.getTotalScore() != null) {
+                    list.add(cb.equal(root.get("totalScore").as(Integer.class), q.getTotalScore()));
+                }
+                if (q.getCreateTime() != null) {
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM");
+                    list.add(cb.equal(cb.substring(root.get("createTime").as(String.class), 1, 7),
+                            f.format(q.getCreateTime())));
+                }
+                Predicate[] ps = new Predicate[list.size()];
+                query.where(cb.and(list.toArray(ps)));
+                if (StringUtils.isNotEmpty(q.getSort())) {
+                    query.orderBy(cb.desc(root.get(q.getSort())));
+                }
+                return query.getGroupRestriction();
+            }
+        };
+        PageRequest pageRequest = null;
+        if (q.getPageIndex() != null && q.getPageSize() != null) {
+            pageRequest = new PageRequest(q.getPageIndex(), q.getPageSize());
+        }
+        Page<PerformanceEvaluation> pages = null;
+        pages = performanceEvaluationDao.findAll(sp, pageRequest);
+        return pages;
+    }
+
+    /**
+     * 查询单个
+     * @Title: findOne
+     * @Description: 
+     * @author: duan.zhao.qian
+     * @date: 2015年11月28日 下午3:48:10
+     * @version: 
+     *
+     * @param id
+     * @return
+     *
+     */
+    public PerformanceEvaluation findOne(Long id) {
+        return performanceEvaluationDao.findOne(id);
+    }
+
+    /**
+     * 保存更新
+     * @Title: update
+     * @Description: 
+     * @author: duan.zhao.qian
+     * @date: 2015年11月28日 下午3:49:00
+     * @version: 
+     *
+     * @param entity
+     * @return
+     *
+     */
+    public PerformanceEvaluation update(PerformanceEvaluation entity) {
+        entity.setUpdateTime(Calendar.getInstance().getTime());
+        return performanceEvaluationDao.save(entity);
+    }
+}

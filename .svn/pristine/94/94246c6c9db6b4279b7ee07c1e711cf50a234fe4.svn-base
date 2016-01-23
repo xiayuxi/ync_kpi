@@ -1,0 +1,32 @@
+package com.ync365.oa.web.projectChange;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ync365.oa.entity.ProjectChange;
+import com.ync365.oa.query.ProjectChangeQuery;
+import com.ync365.oa.service.projectChange.ProjectChangeService;
+
+
+
+
+@Controller
+@RequestMapping(value = "/projectchange")
+public class ProjectChangeController {
+    
+    @Autowired
+    private ProjectChangeService projectChangeService;
+
+    @RequestMapping(value = "/listAjax" ,method = RequestMethod.POST)
+    @ResponseBody
+    public Page<ProjectChange> efficiencyListAjax( ProjectChangeQuery q ,Model model){
+        Page<ProjectChange> page = projectChangeService.findAll(q);
+        return page;
+    }
+    
+}

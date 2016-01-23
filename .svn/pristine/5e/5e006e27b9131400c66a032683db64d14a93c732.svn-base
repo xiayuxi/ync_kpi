@@ -1,0 +1,28 @@
+package com.ync365.oa.service.projectChange;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ync365.oa.entity.ProjectChange;
+import com.ync365.oa.repository.ProjectChangeDao;
+
+
+@Component
+@Transactional
+public class ProjectChangeService {
+
+    private static Logger logger = LoggerFactory.getLogger(ProjectChangeService.class);
+    
+    @Autowired
+    private ProjectChangeDao projectChangeDao;
+    
+    public List<ProjectChange> findListByProId(int projectId){
+        List<ProjectChange> projectChangeList = projectChangeDao.findByProjectId(projectId);
+        return projectChangeList;
+    }
+}

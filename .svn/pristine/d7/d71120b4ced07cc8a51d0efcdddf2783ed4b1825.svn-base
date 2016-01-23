@@ -1,0 +1,61 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="staticCtx" value="${pageContext.request.contextPath}/static"/>
+<html>
+<head>
+	<title>专业管理</title>
+<!-- artDialog -->
+<script type="text/javascript" src="${staticCtx}/artdialog/artDialog.js?skin=brief"></script>
+<script type="text/javascript" src="${staticCtx}/artdialog/plugins/iframeTools.js"></script>
+
+<script type="text/javascript">
+	//添加专业性弹窗
+	function toAdd(){		
+		art.dialog.open("${ctx}/admin/specialty/addPage",{id:'add_dialog',resize:true,width:400,height:300});			
+	}	
+	//删除专业性弹窗
+	function toDelete(specialtyId){		
+		art.dialog.open("${ctx}/admin/specialty/deletePage?specialtyId="+specialtyId,{id:'add_dialog',resize:true,width:400,height:300});			
+	}	
+</script>
+</head>
+<body>	
+	<form action="query" method="post">
+		专业性：<input type="text" name="name" />
+		部门负责人：<input type="text" name="mt" /><br/>
+		部&nbsp;&nbsp;&nbsp;&nbsp;门：
+			<select name="departmentId">	
+				<option value="">----</option>			
+				<c:forEach var="department" items="${departmentList }">					
+					<option value="${department.id }" <c:if test="${department.id==departmentId }">selected="selected"</c:if>>${department.name }</option>
+					
+				</c:forEach>
+			</select><br/><br/><br/>
+		<button style="margin-left: 200px" id="search" type="submit">搜索</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" value="添加专业性" onclick="toAdd()" />
+	</form>
+	
+	<table  border="1px;" style="border-collapse: collapse;width: 800px;" bordercolor="#000000">
+		<tr align="center">
+			<td>序号</td>
+			<td>专业性</td>
+			<td>部门</td>
+			<td>部门负责人</td>			
+			<td>操作</td>
+		</tr>
+		<c:forEach var="specialty" items="${specialtyList }" varStatus="status">
+			<tr  align="center">
+				<td>${status.index+1 }</td>				
+				<td>${specialty.name }</td>				
+				<td>${specialty.departmentName }</td>
+				<td>${specialty.mt}</td>
+				<td>
+					<a href="javascript:void(0)" onclick="toDelete('${specialty.id }')">删除</a>					
+				</td>
+			</tr>
+		</c:forEach>
+	</table>	
+</body>
+
+</html>

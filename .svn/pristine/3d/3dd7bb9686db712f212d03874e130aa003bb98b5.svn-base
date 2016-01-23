@@ -1,0 +1,12 @@
+package com.ync365.oa.repository;
+
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import com.ync365.oa.entity.Department;
+import com.ync365.oa.entity.Satisfaction;
+
+public interface SatisfactionDao  extends PagingAndSortingRepository<Satisfaction, Long>, JpaSpecificationExecutor<Satisfaction> {
+
+	
+}

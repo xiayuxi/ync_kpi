@@ -1,0 +1,212 @@
+package com.ync365.oa.service.specialty;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ync365.oa.entity.Employe;
+import com.ync365.oa.entity.Specialty;
+import com.ync365.oa.entity.SpecialtyJX;
+import com.ync365.oa.repository.EmployeDao;
+import com.ync365.oa.repository.SpecialtyDao;
+import com.ync365.oa.repository.SpecialtyJXDao;
+
+/**
+ * 专业性--绩效的业务逻辑类
+ * @author lyh
+ *
+ */
+@Component
+@Transactional
+public class SpecialtyJXService {
+	@Autowired
+	private SpecialtyJXDao specialtyJXDao;
+	@Autowired
+	private SpecialtyDao specialtyDao;
+	@Autowired
+	private EmployeDao employeDao;
+	
+	/**
+	 * 添加绩效列表(此方法需要在定时任务里调用)
+	 * @param SpecialtyJX
+	 */
+	public void addSpecialtyJXList(final Long departmentId,final String createTime){
+		
+		//得到该部门下的所有员工
+		List<Employe> employeLsit = getEmployesByDepartmentId(departmentId);
+		List<SpecialtyJX> specialtyJXList = new ArrayList<SpecialtyJX>();
+		if(employeLsit!=null&&employeLsit.size()>0){			
+			for (Employe employe : employeLsit) {
+				SpecialtyJX jx1 = new SpecialtyJX();
+				jx1.setDepartmentId(employe.getDepartmentId());
+				jx1.setDepartmentName(employe.getDepartmentName());
+				jx1.setEvaluateId(employe.getId());
+				jx1.setEvaluateName(employe.getName());				
+				specialtyJXList.add(jx1);
+			}
+		}
+		
+		//得到该部门下的所有专业性
+		Specification<Specialty> spec = new Specification<Specialty>() {
+			@Override
+			public Predicate toPredicate(Root<Specialty> root,CriteriaQuery<?> query, CriteriaBuilder cb) {
+				List<Predicate> predList = new ArrayList<Predicate>();
+				predList.add(cb.and(cb.equal(root.get("departmentId"), departmentId)));				
+				if (createTime != null) {
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM");
+                    predList.add(cb.equal(cb.substring(root.get("createTime").as(String.class), 1, 7),
+                            f.format(createTime)));
+	             }		
+				Predicate[] ps = new Predicate[predList.size()];
+                query.where(cb.and(predList.toArray(ps)));                
+                return query.getGroupRestriction();
+			}			
+		};		
+		List<Specialty> specialtyList = specialtyDao.findAll(spec);
+		
+		//组装绩效列表数据
+		int times = 1;
+		for (Specialty specialty : specialtyList) {
+			for (SpecialtyJX specialtyJX : specialtyJXList) {
+				if(times==1){//第一次执行外循环
+					specialtyJX.setSpecialtyId(specialty.getId());
+					specialtyJX.setSpecialtyName(specialty.getName());
+					specialtyJX.setCreateTime(specialty.getCreateTime());
+					specialtyJXDao.save(specialtyJX);					
+				}else{//第二次执行外循环
+					SpecialtyJX jx2 = new SpecialtyJX();					
+					jx2.setDepartmentId(specialtyJX.getDepartmentId());
+					jx2.setDepartmentName(specialtyJX.getDepartmentName());					
+					jx2.setBeEvaluatedId(specialtyJX.getBeEvaluatedId());
+					jx2.setBeEvaluatedName(specialtyJX.getBeEvaluatedName());
+					jx2.setSpecialtyId(specialty.getId());
+					jx2.setSpecialtyName(specialty.getName());
+					jx2.setCreateTime(specialty.getCreateTime());
+					specialtyJXDao.save(jx2);					
+				}				
+			}
+			times++;
+		}
+	}
+	
+	/**
+	 * 专业性--绩效评价(本月评价上个月的)
+	 */
+	public void evaluate(List<SpecialtyJX> specialtyJXlist){		
+		if(specialtyJXlist!=null&&specialtyJXlist.size()>0){
+			for (SpecialtyJX specialtyJX : specialtyJXlist) {
+				specialtyJXDao.save(specialtyJX);			
+			}
+		}		
+	}
+	
+	/**
+	 * 专业性--修改绩效评价(本月评价上个月的)
+	 */
+	public void updateEvaluate(List<SpecialtyJX> specialtyJXlist){
+		if(specialtyJXlist!=null&&specialtyJXlist.size()>0){
+			for (SpecialtyJX specialtyJX : specialtyJXlist) {
+				specialtyJXDao.save(specialtyJX);			
+			}
+		}	
+	}
+	
+	/**
+	 * 按月份获取某个员工的专业性评价
+	 * @return
+	 */
+	public List<SpecialtyJX> getSpecialtyJXByEmployeId(final Long beEvaluatedId,final String createTime){	
+		Specification<SpecialtyJX> spec = new Specification<SpecialtyJX>() {
+			@Override
+			public Predicate toPredicate(Root<SpecialtyJX> root,CriteriaQuery<?> query, CriteriaBuilder cb) {	
+				List<Predicate> predList = new ArrayList<Predicate>();
+				predList.add(cb.and(cb.equal(root.get("beEvaluatedId"), beEvaluatedId)));
+				 if (createTime != null) {
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM");
+                    predList.add(cb.equal(cb.substring(root.get("createTime").as(String.class), 1, 7),
+                            f.format(createTime)));
+	             }				 
+				 Predicate[] ps = new Predicate[predList.size()];
+                 query.where(cb.and(predList.toArray(ps)));                
+                 return query.getGroupRestriction();
+			}			
+		};
+		List<SpecialtyJX> list = specialtyJXDao.findAll(spec);
+		if(list!=null&&list.size()>0){
+			Double totalScore = 0d;
+			for (SpecialtyJX specialtyJX : list) {
+				//计算某个被评价人的专业性总分
+				totalScore += specialtyJX.getScore();				
+			}
+			SpecialtyJX specJX = list.get(0);
+			specJX.setTotalScore(totalScore);
+		}
+		return list;		
+	}
+	
+	/**
+	 * 按月份获取某个MT负责人下的所有员工的专业性评价列表(本月评价上个月的)
+	 * @return
+	 */
+	public List<SpecialtyJX> getAllSpecialtyJXByEvaluatedId(final Long evaluatedId,final String createTime){			
+		
+		final Employe employe = employeDao.findOne(evaluatedId);		
+		//addSpecialtyJXList(employe.getDepartmentId(),createTime);
+		
+		//获取当月Mt负责人要进行评价的上个月的专业性列表
+		Specification<SpecialtyJX> spec = new Specification<SpecialtyJX>() {
+			@Override
+			public Predicate toPredicate(Root<SpecialtyJX> root,CriteriaQuery<?> query, CriteriaBuilder cb) {
+				List<Predicate> predList = new ArrayList<Predicate>();
+				predList.add(cb.and(cb.equal(root.get("departmentId"), employe.getDepartmentId())));				
+				if (createTime != null) {
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM");
+                    predList.add(cb.equal(cb.substring(root.get("createTime").as(String.class), 1, 7),
+                            f.format(createTime)));
+	             }		
+				Predicate[] ps = new Predicate[predList.size()];
+                query.where(cb.and(predList.toArray(ps)));                
+                return query.getGroupRestriction();
+			}			
+		};
+		List<SpecialtyJX> list = specialtyJXDao.findAll(spec);
+		if(list!=null&&list.size()>0){
+			Double totalScore = 0d;
+			for (SpecialtyJX specialtyJX : list) {
+				//计算某个被评价人的专业性总分
+				if(specialtyJX.getScore() != null){
+					totalScore += specialtyJX.getScore();
+				}				
+			}
+			SpecialtyJX specJX = list.get(0);
+			specJX.setTotalScore(totalScore);
+		}
+		return list;	
+	}		
+	
+	/**
+	 * 获取某个部门下的所有员工
+	 * @return
+	 */
+	public List<Employe> getEmployesByDepartmentId(final Long departmentId){
+		Specification<Employe> spec = new Specification<Employe>() {
+			@Override
+			public Predicate toPredicate(Root<Employe> root,
+					CriteriaQuery<?> query, CriteriaBuilder cb) {				
+				return cb.and(cb.equal(root.get("departmentId"),departmentId));
+			}			
+		};		
+		return employeDao.findAll(spec);
+	}	
+}

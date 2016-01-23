@@ -1,0 +1,79 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
+<head>
+<script src="${ctx }/static/My97/WdatePicker.js"></script>
+<script type="text/javascript" src="${ctx}/static/jquery/jquery-1.9.1.min.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>员工月度效能</title>
+<style type="text/css">
+.d1 {
+	margin-left: 150px;
+}
+</style>
+<script type="text/javascript">
+	function f(){
+		var  myselect=document.getElementById("selectDept");
+		var index=myselect.selectedIndex ; 
+		var  id=myselect.options[index].value;
+		var text=myselect.options[index].text;
+		 
+		document.getElementById("departmentName").value=text;
+		
+	}
+</script>
+<script type="text/javascript">
+$(function(){
+	var size=${es.size()};
+	$.ajaxSetup({
+		   async: false
+		   });
+	for(var i=0;i<size;i++){
+		var pid=document.getElementById("pId"+i+"").value;
+		$.ajax({ 
+	        type: "GET", 
+	       	url: "${ctx}/admin/efficiencyResult/selectBypId/"+pid, 
+	        dataType:"text", 
+	        success: function(data){ 
+	        	document.getElementById ("state"+i+"").innerHTML=data;
+	        } ,
+		});		
+	}
+	
+});  
+</script>
+</head>
+<body>
+	<form action="" method="get" id="form1">
+		<div id="search">
+		<table align="center" border="0px;" style="border-collapse: collapse;width: 800px;" bordercolor="#000000">
+				<tr>
+					<td>部门：${er.departmentName}</td><td>工号：${er.employeCode}</td>
+				</tr>
+				<tr>
+					<td>姓名：${er.employeName}</td><td>时间：<fmt:formatDate value="${er.createTime }" pattern="yyyy-MM"/></td>
+				</tr>
+			</table>
+		</br></br>
+	</div>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	项目详情</br>
+	<c:forEach items="${es}" var="efficiency"  varStatus="status">
+			<div class="d1">
+			<span>项目名称：${efficiency.projectName }</span></br>
+			<input type="hidden" value="${efficiency.projectId }" id="pId${status.index}">
+			项目状态： <span id="state${status.index}"></span></br>
+			<span>项目经理：${efficiency.pm }</span></br>
+			<span>周期：${efficiency.actualBeginTime}~${efficiency.actualEndTime }</span></br>
+			<span>计划工时：${efficiency.planHours }</span></br>
+			<span>实际工时：${efficiency.actualHours }</span></br>
+			<span>产出工时：${efficiency.outputHours }</span></br>
+			</div>
+	</c:forEach>
+	</div>
+	</form>
+</body>
+</html>

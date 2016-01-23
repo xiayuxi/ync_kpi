@@ -1,0 +1,8 @@
+#(optional)override jdbc url as in-memory db for unit test
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://172.10.3.40:3306/jx?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull
+jdbc.username=oa
+jdbc.password=oa
+
+#log4jdbc driver
+#jdbc.url=jdbc:log4jdbc:h2:mem:oa;DB_CLOSE_DELAY=-1

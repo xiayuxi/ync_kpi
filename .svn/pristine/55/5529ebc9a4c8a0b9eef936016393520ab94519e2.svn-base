@@ -1,0 +1,100 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
+<head>
+<script src="${ctx }/static/My97/WdatePicker.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>查看员工月度效能</title>
+<style type="text/css">
+#t1{
+	margin-left: 150px;
+}
+</style>
+<script type="text/javascript">
+	function f(){
+		var  myselect=document.getElementById("selectDept");
+		var index=myselect.selectedIndex ; 
+		var  id=myselect.options[index].value;
+		var text=myselect.options[index].text;
+		 
+		document.getElementById("departmentName").value=text;
+		
+	}
+</script>
+</head>
+<body>
+	<form action="list" method="get" id="form1">
+	<div id="search">
+			<table id="t1">
+			<tr>
+				<td>姓名：<input type="text" name="employeName"></td>
+				<td>时间：<input class="Wdate" id="first" type="text" onfocus="new WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM'})" name="createTime"/>
+			    </td>
+			</tr>
+			<tr>
+				<td>实际工时：<input type="text" name="actualHours"></td>
+				<td>工号： <input type="text" name="employeCode"></td>
+			</tr>
+			<tr>
+				<td>部门：<input type="hidden" id="departmentName" name="departmentName">
+						<select id="selectDept" onclick="f()">
+						<c:forEach items="${dept }" var="dept">
+							<option value="${dept.id}" >${dept.name}</option>
+						</c:forEach>
+					</select>			
+				</td>
+				<td>项目数：<input type="text" name="projectCount"></td>
+			</tr>
+			<tr>
+				<td>
+					<input id="submit_btn" class="btn btn-primary" type="submit" value="搜索"/>&nbsp;
+				</td>
+			</tr>
+		</table>
+		</br></br>
+	</div>
+	<div id=data>
+	<table align="center" border="1px;" style="border-collapse: collapse;width: 800px;" bordercolor="#000000">
+		<tr>
+			<td>序号</td>
+			<td>工号</td>
+			<td>姓名</td>
+			<td>部门</td>
+			<td>项目数</td>
+			<td>计划工时</td>
+			<td>实际工时</td>
+			<td>产出工时</td>
+			<td>标准工时</td>
+			<td>负荷率</td>
+			<td>效能</td>
+			<td>时间</td>
+			<td>总分</td>
+			<td>操作</td>
+		</tr>
+	<c:forEach items="${er.content}" var="efficiencyResult"  varStatus="status">
+	   <tr>
+			<td>${status.index+1 }</td>
+			<td>${efficiencyResult.employeCode }</td>
+			<td>${efficiencyResult.employeName }</td>
+			<td>${efficiencyResult.departmentName }</td>
+			<td>${efficiencyResult.projectCount }</td>
+			<td>${efficiencyResult.planHours }</td>
+			<td>${efficiencyResult.actualHours }</td>
+			<td>${efficiencyResult.outputHours }</td>
+			<td>${efficiencyResult.basicHours}</td>
+			<td>${efficiencyResult.loadRate}</td>
+			<td>${efficiencyResult.efficiencyPercentage}</td>
+			<td><fmt:formatDate value="${efficiencyResult.createTime }" pattern="yyyy-MM"/></td>
+			<td>${efficiencyResult.efficiencyTotalScore}</td>
+			<td>
+				 <input type="button" value="查看" class="btn_view" onclick="location.href='view/${efficiencyResult.id }';"/>
+			</td>
+		</tr>
+	</c:forEach>
+	</table> 
+	</div>
+	</form>
+</body>
+</html>

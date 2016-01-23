@@ -1,0 +1,58 @@
+package com.ync365.oa.repository;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.ync365.oa.entity.Employe;
+import com.ync365.oa.query.EmployeQuery;
+import com.ync365.oa.service.efficiency.EfficiencyService;
+import com.ync365.oa.service.efficiencyResult.EfficiencyResultService;
+import com.ync365.oa.service.employe.EmployeService;
+
+public class EfficiencyResultTaskDemo extends BaseTest{
+	
+	@Autowired
+	private EfficiencyService efficiencyService;
+	
+	@Autowired
+	private EmployeService employeService;
+	
+	@Autowired
+	private EfficiencyResultService  efficiencyResultService; 
+	
+	/*@Test
+	public void test(){
+		Long employeId=2l;
+		Date data=new Date();
+		 
+		EfficiencyResult er=efficiencyResultService.findEfficiencyResult(employeId, data);
+		
+		if(er!=null){
+			System.out.println("+++++++++++++++++++++");
+			System.out.println("id>>>>>>>"+er.getId());
+			System.out.println("负荷率>>>>"+er.getLoadRate());
+			System.out.println("效率>>>>>>"+er.getEfficiencyPercentage());
+			System.out.println("总分>>>>>>"+er.getEfficiencyTotalScore());
+		}
+	}*/
+	
+	@Test
+	public void test(){
+		
+		/*Calendar cal = Calendar.getInstance();
+		final Date calDate = cal.getTime();
+		final String code="121";
+		List<Efficiency> es=efficiencyService.findEfficiencyByEmployeCodeAndTime(code, calDate);
+		System.out.println("121员工的效能列表"+es.size());*/
+		
+		efficiencyResultService.calcEfficiencyResult();
+		/*EmployeQuery employeQuery =new EmployeQuery();
+		List<Employe> es=employeService.find(employeQuery).getContent();
+		System.out.println("SIZE"+es.size());*/
+	}
+	
+	
+	
+}

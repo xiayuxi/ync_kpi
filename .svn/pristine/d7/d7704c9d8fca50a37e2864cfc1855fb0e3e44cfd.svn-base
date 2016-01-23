@@ -1,0 +1,50 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="staticCtx" value="${pageContext.request.contextPath}/static"/>
+<html>
+<head>
+	<title></title>
+<script type="text/javascript">
+	function evaluate(){
+		alert(createTime);
+		$('#evaluateForm').ajaxSubmit({
+			url : "${ctx}/specialtyJX/evaluate?operation=1",
+			type : 'post',
+			success:function(data){
+				if(data=="OK"){
+					alert("评价成功！");
+	    			window.location.href="${ctx}/specialtyJX/employeJXList?createTime="+createTime;			
+	    		}
+			}
+		});
+	}	
+	
+</script>
+</head>
+<body>
+<div style="margin-left: 200px">
+	<form id="evaluateForm" action="" method="post">
+		<table  border="1px;" style="border-collapse: collapse;width: 600px;" bordercolor="#000000">
+			<tr align="center">
+				<td>序号</td>
+				<td>专业性</td>
+				<td>评分</td>				
+			</tr>
+			<c:forEach var="specialtyJX" items="${employeJX.specialtyJXList }" varStatus="status">
+				<tr align="center">
+					<td>${status.index+1 }</td>				
+					<td>${specialtyJX.specialtyName }</td>							
+					<td><input type="text" name="score"/></td>	
+				</tr>
+			</c:forEach>
+		</table>
+		<span id="" style="margin-left: 300px">总分30分，各专业性满分为总分除以专业性数量</span><br/>
+		评语：<textarea rows="3" cols="100" name="comment"></textarea><br/>
+							<span id="" style="color:red;margin-left: 200px">请输入评语</span><br/>
+		总分                                          <span id="" style="margin-left: 200px">xx</span>分<br/>
+		<input type="button" style="margin-left: 200px" value="提交" onclick="evaluate()"/>		
+	</form>
+</div>	
+</body>
+</html>

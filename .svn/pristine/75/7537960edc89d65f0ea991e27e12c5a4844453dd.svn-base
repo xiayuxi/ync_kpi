@@ -1,0 +1,83 @@
+package com.ync365.oa.web.leaderAssessment;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springside.modules.web.Servlets;
+
+import com.google.common.collect.Maps;
+import com.ync365.oa.entity.LeaderAssessment;
+import com.ync365.oa.service.account.ShiroDbRealm.ShiroUser;
+import com.ync365.oa.service.leaderAssessment.LeaderAssessmentService;
+
+
+@Controller
+@RequestMapping(value = "/leaderAssessment")
+public class LeaderAssessmentController {
+	private static final String PAGE_SIZE = "10";
+/*	private static Map<String, String> sortTypes = Maps.newLinkedHashMap();
+	static {
+		sortTypes.put("auto", "自动");
+		sortTypes.put("title", "标题");
+	}
+	*/
+	@Autowired
+	private LeaderAssessmentService assessmentService;
+	
+	/**
+	 * 取出Shiro中的当前用户Id.
+	 */
+	private Long getCurrentUserId() {
+		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		return user.id;
+	}
+	
+	
+	//编辑页面
+	@RequestMapping(value = "/editPage/{id}", method = RequestMethod.POST)
+	public String edit(@PathVariable int id, Model model) {
+		LeaderAssessment leaderAssessment = assessmentService.selectById(id);
+		model.addAttribute("assessment", leaderAssessment);
+		return "leaderAssessment/assessmentEdit";
+	}
+	
+	//部门MT责任人列表
+	@RequestMapping(value = "/depList", method = RequestMethod.GET)
+	public String mtList(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+		Map<String, Object> searchParams = new HashMap<String, Object>();
+		searchParams.put("EQ_mt", "刘总");
+		Page<LeaderAssessment> assessments = assessmentService.getList(searchParams, pageNumber, pageSize, sortType);
+		model.addAttribute("assessments", assessments);
+		return "leaderAssessment/assessmentDepList";
+	}
+
+	@RequestMapping(value = "/edit", method = RequestMethod.POST)
+	public String edit(LeaderAssessment assessment) {
+		assessmentService.update(assessment);
+		return "redirect:editPage/" + assessment.getId();
+	}
+	
+	@InitBinder
+    public void InitBinder(ServletRequestDataBinder bin) {
+        bin.registerCustomEditor(Date.class, new CustomDateEditor( new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), true));
+    }
+}

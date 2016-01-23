@@ -1,0 +1,14 @@
+package com.ync365.oa.repository;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class Demo {
+	public static void main(String[] args) {
+		 Calendar calendar = Calendar.getInstance();
+	     calendar.add(Calendar.MONTH, -1);
+	     SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
+	     System.out.println(sdf.format(calendar.getTime()));
+	}
+}

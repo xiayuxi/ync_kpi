@@ -1,0 +1,42 @@
+package com.ync365.oa.service.specialty;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
+import com.ync365.oa.entity.SpecialtyJX;
+import com.ync365.oa.repository.BaseTest;
+import com.ync365.oa.repository.SpecialtyJXDao;
+
+public class SpecialtyJXServiceTest extends BaseTest{
+	private SpecialtyJXDao specialtyJXDao;
+	@Test
+	public void testGetSpecialtyJX(){
+		//List<SpecialtyJX> list = specialtyJXDao.findAll(spec);
+		List<SpecialtyJX> list = new ArrayList<SpecialtyJX>();
+		SpecialtyJX jx1 = new SpecialtyJX();		
+		SpecialtyJX jx2 = new SpecialtyJX();
+		SpecialtyJX jx3 = new SpecialtyJX();
+		SpecialtyJX jx4 = new SpecialtyJX();
+		jx1.setScore(4d);
+		jx2.setScore(5d);
+		jx3.setScore(7d);
+		jx4.setScore(8d);
+		list.add(jx1);
+		list.add(jx2);
+		list.add(jx3);
+		list.add(jx4);
+		if(list!=null&&list.size()>0){
+			Double totalScore = 0d;
+			for (SpecialtyJX specialtyJX : list) {
+				//计算某个被评价人的专业性总分
+				totalScore += specialtyJX.getScore();				
+			}
+			SpecialtyJX specJX = list.get(2);
+			specJX.setTotalScore(totalScore);
+			System.out.println("小张的专业评价总分为：=============="+specJX.getTotalScore());
+		}
+		
+	}
+}

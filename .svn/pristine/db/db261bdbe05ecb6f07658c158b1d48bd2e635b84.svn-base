@@ -1,0 +1,65 @@
+package com.ync365.oa.service.satisfaction;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ync365.oa.entity.Satisfaction;
+import com.ync365.oa.query.SatisfactionQuery;
+import com.ync365.oa.repository.BaseTest;
+
+public class SatisfactionServiceTest extends BaseTest {
+
+	@Autowired
+	SatisfactionService satisfactionService;
+	
+	@Test
+	public void addTest() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+		Date createTime = cal.getTime();
+		Satisfaction satisfaction = new Satisfaction();
+		satisfaction.setBeEvaluatedDepartmentId(123L);
+		satisfaction.setBeEvaluatedDepartmentName("测试");
+		satisfaction.setBeEvaluatedId(321L);
+		satisfaction.setBeEvaluatedName("孙轶凡");
+		satisfaction.setComment("不错不错");
+		satisfaction.setCreateTime(createTime);
+		satisfaction.setEvaluatedDepartmentId(111L);
+		satisfaction.setEvaluatedDepartmentName("java");
+		satisfaction.setEvaluatedId(333L);
+		satisfaction.setEvaluatedName("张栋");
+		satisfaction.setEvaluatedTime(new Date());
+		satisfaction.setProjectId(222L);
+		satisfaction.setProjectName("测试项目");
+		Satisfaction sat = satisfactionService.add(satisfaction);
+		Assert.isTrue(sat.getId()!=null);
+	}
+	@Test
+	public void DepartAppendEvaNameTest() throws JsonProcessingException {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, -3);
+		Date beginTime = cal.getTime();
+		cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, 3);
+		Date endTime = cal.getTime();
+		SatisfactionQuery q = new SatisfactionQuery();
+		q.setId(2l);
+		q.setPageSize(15);
+		q.setPageIndex(0);
+		Page<Satisfaction> pages = null;
+		pages = satisfactionService.searchResultDepartAppendEvaName(q);
+		System.out.println("********************************\n");
+		for(Satisfaction sa : pages.getContent()) {
+			ObjectMapper mapper = new ObjectMapper();  
+			System.out.println(mapper.writeValueAsString(sa));  
+		}
+	}
+	
+}

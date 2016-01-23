@@ -1,0 +1,58 @@
+package com.ync365.oa.repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+
+import com.ync365.oa.entity.Department;
+import com.ync365.oa.entity.Employe;
+import com.ync365.oa.query.DepartmentQuery;
+import com.ync365.oa.service.department.DepartmentService;
+
+public class DepartmentDaoTest extends BaseTest{
+	
+	@Autowired
+	DepartmentDao departmentDao;
+	
+	@Autowired
+	EmployeDao employeDao;
+	
+	@Autowired
+	DepartmentService departmentService;
+	
+	@Test
+	public void test(){
+		/*Department d=departmentDao.findOne(2l);
+		System.out.println("name>>>>>>"+d.getName());
+		
+		for(Employe e:d.getEs()){
+			System.out.println("e-name>>>>>"+e.getName());
+		}*/
+		//List<Department> ds=departmentDao.findAll();
+		final DepartmentQuery dq=new DepartmentQuery();
+		Employe e=new Employe();
+		e.setName("王");
+		dq.setE(e);
+		
+		List<Department> ds=departmentService.find(dq);
+		
+		for(Department d:ds){
+			System.out.println("id>>>>>>"+d.getId());
+		}
+		/*
+		List<Department> ds1=new ArrayList<Department>();
+		for(Department d:ds){
+			for(Employe e:d.getEs()){
+				if(e.getName().equals("王五")){
+					ds1.add(d);
+				}
+			}
+		}
+		System.out.println("size>>>>>"+ds1.size());
+		System.out.println("id>>>"+ds1.get(0).getId());
+		*/
+	}
+}

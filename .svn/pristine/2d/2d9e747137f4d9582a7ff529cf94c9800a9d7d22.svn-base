@@ -1,0 +1,52 @@
+package com.ync365.oa.entity;
+
+import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "department")
+public class Department extends IdEntity{
+    
+    /**
+     * 名称
+     */
+    private String name;
+    
+    /**
+     * 
+     */
+    private String mt;
+    
+    /**
+     *创建时间
+     */
+    private Date createTime;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMt() {
+        return mt;
+    }
+
+    public void setMt(String mt) {
+        this.mt = mt;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+
+}

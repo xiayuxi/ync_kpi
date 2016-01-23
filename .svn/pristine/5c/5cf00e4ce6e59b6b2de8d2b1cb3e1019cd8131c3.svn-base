@@ -1,0 +1,164 @@
+package com.ync365.oa.service.efficiency;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ync365.oa.bo.EfficiencyBo;
+import com.ync365.oa.entity.Department;
+import com.ync365.oa.entity.Efficiency;
+import com.ync365.oa.entity.Employe;
+import com.ync365.oa.entity.Project;
+import com.ync365.oa.repository.DepartmentDao;
+import com.ync365.oa.repository.EfficiencyDao;
+import com.ync365.oa.repository.EmployeDao;
+import com.ync365.oa.repository.ProjectDao;
+
+
+@Component
+@Transactional
+public class EfficiencyService {
+    
+    private static Logger logger = LoggerFactory.getLogger(EfficiencyService.class);
+    
+    @Autowired
+    private EfficiencyDao efficiencyDao;
+    
+    @Autowired
+    private ProjectDao projectDao;
+    
+    @Autowired
+    private DepartmentDao departmentDao;
+    
+    @Autowired
+    private EmployeDao employeDao;
+    
+    public void add(EfficiencyBo efficiencyBo) {
+        //创建list 存放对象
+        List<Employe> list = new ArrayList<Employe>();
+        Employe  ee = new Employe();
+        Department det = new Department();
+        
+        Project project = new Project();
+        project.setName(efficiencyBo.getProjectNameBo());
+        String s = "";
+        //拼字符串   修改修改
+        if(null != efficiencyBo ){
+            if(null != efficiencyBo.getEmployeIdBos() && efficiencyBo.getEmployeIdBos().size()>0){
+                for(Integer t : efficiencyBo.getEmployeIdBos()){
+                    if(null != t ){
+                        //更加id查询对象
+                        ee = employeDao.findOne(t.longValue());
+                        list.add(ee);//放入list
+                        if(null != ee && null != ee.getName() && "" != ee.getName()){
+                            s=s+ee.getName()+",";
+                        }
+                    }
+                }
+                //去掉 字符串最后一个逗号
+                if(null != s && "" != s){
+                    s=s.substring(0,s.length()-1);
+                }
+            }
+            //开始时间 
+            if(null != efficiencyBo.getPlanBeginTimes() ){
+                for(int  i=0 ;i<efficiencyBo.getPlanBeginTimes().size();i++){
+                    if(null != efficiencyBo.getPlanBeginTimes().get(i) && "" != efficiencyBo.getPlanBeginTimes().get(i)){
+                        project.setProject_begin_time(this.stringToDate(efficiencyBo.getPlanBeginTimes().get(i)));
+                        break;
+                    }
+                }
+            }
+            //结束时间
+            if(null != efficiencyBo.getPlanEndTimes() ){
+                for(String end : efficiencyBo.getPlanEndTimes()){
+                    if(null != end){
+                        project.setProject_end_time(this.stringToDate(end));
+                    }
+                }
+            }
+        }
+        project.setProject_personnel(s);
+        project.setCreate_time(Calendar.getInstance().getTime());
+        projectDao.save(project);
+        
+        
+        if(null != efficiencyBo){
+            if(null != efficiencyBo.getDepartmentIdBos() && efficiencyBo.getDepartmentIdBos().size() > 0){
+                for(int i=0 ; i<efficiencyBo.getDepartmentIdBos().size() ;i++){
+                    Efficiency efficiency =new Efficiency();
+                    efficiency.setCreate_time(Calendar.getInstance().getTime());
+                    efficiency.setProject_name(efficiencyBo.getProjectNameBo());
+                    //获取项目id
+                    if(null != project && null != project.getId()){
+                        efficiency.setProject_id(project.getId().intValue());
+                    }
+                    
+                    if(null != efficiencyBo.getDepartmentIdBos().get(i)){
+                        det = departmentDao.findOne((efficiencyBo.getDepartmentIdBos().get(i)).longValue());
+                        if(null != det && null != det.getName() && "" != det.getName()){
+                            efficiency.setDepartment_name(det.getName()); 
+                        }
+                        efficiency.setDepartment_id(efficiencyBo.getDepartmentIdBos().get(i));
+                    }
+                    //组长数据
+                    if(null != list.get(i) ){
+                        if(null != list.get(i).getId()){
+                            efficiency.setEmploye_id(list.get(i).getId().intValue());
+                        }
+                        if(null != list.get(i).getCode()){
+                            efficiency.setEmploye_code(list.get(i).getCode().intValue()); 
+                        }
+                        if(null != list.get(i).getName() && "" != list.get(i).getName()){
+                            efficiency.setEmploye_name(list.get(i).getName());
+                        }
+                    }
+                    if(null != efficiencyBo.getPlanHoursBos().get(i)){
+                        efficiency.setPlan_hours(efficiencyBo.getPlanHoursBos().get(i));    
+                    }
+                    
+                    //开始时间 
+                    if(null != efficiencyBo.getPlanBeginTimes().get(i) ){
+                        efficiency.setPlan_begin_time(this.stringToDate(efficiencyBo.getPlanBeginTimes().get(i)));
+                    }
+                    //结束时间
+                    if(null != efficiencyBo.getPlanEndTimes().get(i) ){
+                        efficiency.setPlan_end_time(this.stringToDate(efficiencyBo.getPlanEndTimes().get(i)));
+                    }
+                    
+                    efficiencyDao.save(efficiency);
+                }
+            }
+        }
+        
+    }
+    
+    
+    /**
+     * 字符串  转换成 时间
+     * @param str
+     * @return
+     */
+    public static Date stringToDate(String str) {  
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");  
+        Date date = null;  
+        try {  
+            // Fri Feb 24 00:00:00 CST 2012  
+            date = format.parse(str);   
+        } catch (ParseException e) {  
+            e.printStackTrace();  
+        }  
+        return date;  
+    } 
+
+}
