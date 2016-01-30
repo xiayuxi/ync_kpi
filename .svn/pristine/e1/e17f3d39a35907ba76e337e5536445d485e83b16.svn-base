@@ -1,9 +1,0 @@
-package com.ync365.oa.repository;
-
-public class Demo {
-	public static void main(String[] args) {
-		String str="2015-12-4 13:55:55";
-		str=str.substring(0,9);
-		System.out.println(str);
-	}
-}
